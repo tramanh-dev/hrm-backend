@@ -16,29 +16,24 @@ class PayrollController extends Controller
 
     public function getMonthlyDraft(Request $request)
     {
-        // 1. Lấy tham số tháng/năm từ request, mặc định là hiện tại
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
         $finePerMinute = 2000; // Mức phạt đi trễ 2k/phút
-
-        // 2. Lấy danh sách nhân viên kèm các dữ liệu liên quan trong tháng đó
         $users = User::with([
             'salaryLevel',
             'timesheets' => function ($query) use ($month, $year) {
                 $query->whereMonth('work_date', $month)->whereYear('work_date', $year);
             },
             'leaves' => function ($query) use ($month, $year) {
-                $query->where('status', 'approved') // Chỉ tính đơn đã duyệt
+                $query->where('status', 'approved') 
                     ->whereMonth('start_date', $month)
                     ->whereYear('start_date', $year);
             }
         ])->get();
 
-        // 3. Duyệt qua từng nhân viên để tính toán lương dự thảo
         $data = $users->map(function ($user) use ($month, $year, $finePerMinute) {
             $baseSalary = $user->salaryLevel->base_salary ?? 0;
 
-            // --- PHẦN 1: TÍNH TỔNG NGÀY CÔNG HƯỞNG LƯƠNG ---
             // Tổng ngày đi làm thực tế (từ bảng Timesheet)
             $actualWorkDays = $user->timesheets->sum('day_count');
 
@@ -54,14 +49,13 @@ class PayrollController extends Controller
             // Tính lương theo ngày công (Giả định tháng tiêu chuẩn 26 ngày)
             $salaryByDays = ($totalPayableDays > 0) ? ($baseSalary / 26) * $totalPayableDays : 0;
 
-            // --- PHẦN 2: TÍNH PHẠT ĐI TRỄ (Logíc ân hạn 5 phút) ---
             $totalLateMinutes = 0;
             foreach ($user->timesheets as $sheet) {
                 if ($sheet->check_in) {
                     $checkInTime = Carbon::parse($sheet->check_in);
                     $hour = (int)$checkInTime->format('H');
 
-                    // Mốc giờ bắt đầu: Sáng 8h, nếu làm nửa ngày chiều thì tính từ 13h (ví dụ)
+                    //  Sáng 8h, nếu làm nửa ngày chiều thì tính từ 13h
                     $expectedStart = ($sheet->day_count <= 0.5 && $hour >= 12) ? '13:00:00' : '08:00:00';
                     $standardStart = Carbon::createFromFormat('H:i:s', $expectedStart);
                     $currentTime = Carbon::createFromFormat('H:i:s', $checkInTime->format('H:i:s'));
@@ -76,16 +70,13 @@ class PayrollController extends Controller
             }
             $lateDeduction = $totalLateMinutes * $finePerMinute;
 
-            // --- PHẦN 3: TÍNH BẢO HIỂM ---
             $bhxh = $baseSalary * 0.08;
             $bhyt = $baseSalary * 0.015;
             $bhtn = $baseSalary * 0.01;
             $totalInsurance = $bhxh + $bhyt + $bhtn;
 
-            // --- PHẦN 4: THỰC NHẬN ---
             $netSalary = $salaryByDays - $totalInsurance - $lateDeduction;
 
-            // Kiểm tra xem đã chốt lương chưa
             $existPayslip = Payslip::where('user_id', $user->id)
                 ->where('month', $month)
                 ->where('year', $year)
@@ -110,9 +101,9 @@ class PayrollController extends Controller
         return response()->json($data);
     }
 
-public function storePayslip(Request $request)
+    public function storePayslip(Request $request)
     {
-        // Validate dữ liệu đầu vào (Nên có để tránh lỗi)
+
         $request->validate([
             'user_id' => 'required',
             'month' => 'required',
@@ -128,14 +119,12 @@ public function storePayslip(Request $request)
             'total_payable_days' => $request->total_payable_days,
             'total_late_minutes' => $request->total_late_minutes,
             'late_deduction'     => $request->late_deduction,
-            
-            // --- SỬA LẠI CÁC DÒNG DƯỚI ĐÂY ---
-            'bonus'              => $request->bonus ?? 0,          // Thêm dòng này
-            'deduction'          => $request->deduction ?? 0,      // Thêm dòng này
-           
-            'insurance_amount'   => $request->insurance_amount, // Đã sửa (cũ là total_insurance)
-            'final_salary'       => $request->final_salary,       // Sửa tên khớp với Frontend
-            'status'             => 'paid',                        // Mặc định là paid khi chốt
+            'bonus'              => $request->bonus ?? 0,          
+            'deduction'          => $request->deduction ?? 0,      
+
+            'insurance_amount'   => $request->insurance_amount, 
+            'final_salary'       => $request->final_salary,      
+            'status'             => 'paid',                     
         ];
 
         $payslip = Payslip::updateOrCreate(

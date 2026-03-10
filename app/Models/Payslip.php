@@ -13,19 +13,19 @@ class Payslip extends Model
         'user_id',
         'month',
         'year',
-        'total_work_days',     // Ngày đi làm thực tế
-        'paid_leave_days',     // Ngày nghỉ phép có lương (Mới thêm)
-        'total_payable_days',   // Tổng ngày tính lương (Mới thêm)
+        'total_work_days',     
+        'paid_leave_days',     
+        'total_payable_days',  
         'bonus',
-        'deduction',           // Phạt vi phạm khác
+        'deduction',          
         'insurance_amount',
-        'total_late_minutes',  // Số phút đi trễ
-        'late_deduction',      // Tiền phạt đi trễ
-        'final_salary',        // Thực nhận (net_salary từ React gửi về)
+        'total_late_minutes',  
+        'late_deduction',     
+        'final_salary',        
         'status',
     ];
 
-    // Thiết lập quan hệ: Một phiếu lương thuộc về một nhân viên
+    // Một phiếu lương thuộc về một nhân viên
     public function user()
     {
         return $this->belongsTo(User::class);
