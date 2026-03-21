@@ -20,6 +20,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 COPY . .
+RUN touch database/database.sqlite
 
 RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
 
