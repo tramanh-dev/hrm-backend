@@ -12,7 +12,12 @@ use App\Http\Controllers\Api\HrmController;
 use App\Http\Controllers\Api\LeaveController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\TaskController;
+use Illuminate\Support\Facades\Artisan;
 
+Route::get('/migrate-now', function () {
+    Artisan::call('migrate', ["--force" => true]);
+    return "Migration done!";
+});
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
