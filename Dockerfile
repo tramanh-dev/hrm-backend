@@ -20,10 +20,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 COPY . .
+
 RUN touch database/database.sqlite
 
 RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
 
 RUN chmod -R 775 storage bootstrap/cache
 
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"]
