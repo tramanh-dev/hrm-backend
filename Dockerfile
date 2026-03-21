@@ -21,7 +21,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --ignore-platform-req=ext-gd --no-dev --optimize-autoloader
 
 RUN chmod -R 775 storage bootstrap/cache
 
