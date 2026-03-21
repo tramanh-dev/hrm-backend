@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\TaskController;
 
 Route::post('/login', [AuthController::class, 'login']);
-
+Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [EmployeeController::class, 'updateProfile']);
     Route::post('/upload-avatar', [EmployeeController::class, 'uploadAvatar']);
 
-    // 2. CHẤM CÔNG (AI + GPS) - ĐÃ THÊM PREFIX ĐỂ HẾT LỖI 404
+    // 2. AI + GPS
     Route::prefix('attendance')->group(function () {
         Route::post('/verify-location', [AttendanceController::class, 'verifyLocation']);
         Route::post('/check-in', [AttendanceController::class, 'checkIn']);
