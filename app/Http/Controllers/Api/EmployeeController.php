@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
-    // --- 1. LẤY DANH SÁCH (CHO HR) ---
+    //  LẤY DANH SÁCH (CHO HR) 
     public function index()
     {
         $currentUser = Auth::user();
@@ -33,7 +33,7 @@ class EmployeeController extends Controller
         return response()->json($employees);
     }
 
-    // --- 2. TẠO MỚI (CHO HR) ---
+    //  TẠO MỚI (CHO HR) 
     public function store(Request $request)
     {
         $currentUser = Auth::user();
@@ -60,19 +60,16 @@ class EmployeeController extends Controller
         return response()->json(['message' => 'Tạo thành công!', 'employee' => $employee], 201);
     }
 
-    // --- 3. XEM CHI TIẾT (LẤY CẢ HR VÀ NHÂN VIÊN) ---
+    //  XEM CHI TIẾT
     public function show($id)
     {
         $currentUser = Auth::user();
 
-        // Nếu bạn muốn CHỈ HR mới được xem người khác, 
-        // còn Employee chỉ được xem chính mình thì giữ nguyên:
+
         if (!$currentUser->isHR() && $currentUser->id != $id) {
             return response()->json(['message' => 'Bạn không có quyền xem thông tin này'], 403);
         }
 
-        // Lấy thông tin user kèm theo phòng ban và có thể là danh sách task 
-        // để biết HR đó đang quản lý gì hoặc Employee đó đang làm gì.
         $employee = User::with(['department'])
             ->withCount(['tasks', 'assignedTasks'])
             ->find($id);
@@ -81,11 +78,9 @@ class EmployeeController extends Controller
             return response()->json(['message' => 'Không tìm thấy người dùng này'], 404);
         }
 
-        // Trả về thêm thông tin role để frontend biết đây là HR hay Employee
         return response()->json($employee);
     }
 
-    // --- 4. HR CẬP NHẬT NHÂN VIÊN (PUT /api/employees/{id}) ---
     public function update(Request $request, $id)
     {
         $currentUser = Auth::user();
@@ -115,7 +110,6 @@ class EmployeeController extends Controller
         return response()->json(['message' => 'Cập nhật thành công!', 'employee' => $employee]);
     }
 
-    // --- 5. NHÂN VIÊN TỰ CẬP NHẬT PROFILE (PUT /api/profile) ---
     public function updateProfile(Request $request)
     {
         $user = Auth::user(); // Lấy chính user đang login
@@ -144,7 +138,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // --- 6. UPLOAD AVATAR ---
+
     public function uploadAvatar(Request $request)
     {
         $request->validate(['avatar' => 'required|image|max:2048']);
@@ -159,7 +153,7 @@ class EmployeeController extends Controller
         return response()->json(['message' => 'Lỗi upload'], 400);
     }
 
-    // --- 7. XÓA (CHO HR) ---
+
     public function destroy($id)
     {
         if (!Auth::user()->isHR()) return response()->json(['message' => 'Forbidden'], 403);
