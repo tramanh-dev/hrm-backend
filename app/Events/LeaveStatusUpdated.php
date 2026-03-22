@@ -18,7 +18,6 @@ class LeaveStatusUpdated implements ShouldBroadcast
 
     public function __construct(Leave $leave)
     {
-        // Gửi kèm thông tin đơn nghỉ phép
         $this->leave = $leave;
     }
 
@@ -28,7 +27,6 @@ class LeaveStatusUpdated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        // Tên sự kiện để bên React lắng nghe
         return 'LeaveStatusUpdated';
     }
 }

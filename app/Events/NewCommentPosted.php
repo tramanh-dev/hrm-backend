@@ -7,11 +7,11 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast; // QUAN TRỌNG: Phải có dòng này
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast; 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewCommentPosted implements ShouldBroadcast // Thêm implements ShouldBroadcast
+class NewCommentPosted implements ShouldBroadcast 
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,18 +19,16 @@ class NewCommentPosted implements ShouldBroadcast // Thêm implements ShouldBroa
 
     public function __construct(TaskComment $comment)
     {
-        // Load thông tin user để bên React có tên người gửi luôn
         $this->comment = $comment->load('user:id,name,avatar');
     }
 
     public function broadcastOn()
     {
-        // Tạo một kênh riêng cho mỗi Task để tin nhắn không bị nhảy sang Task khác
         return new Channel('task.chat.' . $this->comment->task_id);
     }
 
     public function broadcastAs()
     {
-        return 'NewComment'; // Tên sự kiện để React lắng nghe
+        return 'NewComment'; 
     }
 }

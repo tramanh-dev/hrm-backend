@@ -21,7 +21,6 @@ class Leave extends Model
         'duration_days'
     ];
 
-    // Liên kết ngược lại với User để biết đơn này của ai
     public function user()
     {
         return $this->belongsTo(User::class);

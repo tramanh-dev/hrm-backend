@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\Auth;
 class LeaveController extends Controller
 {
 
-    // Gửi đơn xin nghỉ (API: POST /api/leaves)
+    // Gửi đơn xin nghỉ 
     public function store(Request $request)
     {
         $request->validate([
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
             'reason'     => 'required|string',
-            'leave_type' => 'required|string', // Nhân viên chọn: Nghỉ phép năm, Nghỉ không lương...
+            'leave_type' => 'required|string', 
         ]);
 
         // Tính toán số ngày nghỉ bằng Carbon
@@ -35,13 +35,13 @@ class LeaveController extends Controller
             'end_date'   => $request->end_date,
             'reason'     => $request->reason,
             'leave_type' => $request->leave_type,
-            'duration_days' => $duration, // Lưu số ngày đã tính vào đây
+            'duration_days' => $duration, 
             'status'     => 'pending'
         ]);
 
         return response()->json(['message' => 'Gửi đơn thành công!', 'leave' => $leave], 201);
     }
-    // Xem lịch sử nghỉ phép của cá nhân (API: GET /api/leaves)
+    // Xem lịch sử nghỉ phép của cá nhân 
     public function index()
     {
         /** @var \App\Models\User $user */
@@ -56,7 +56,7 @@ class LeaveController extends Controller
     }
 
 
-    // Xem TẤT CẢ đơn cho HR (API: GET /api/leaves/all)
+    // Xem TẤT CẢ đơn cho HR 
     public function allLeaves()
     {
 
@@ -86,7 +86,6 @@ class LeaveController extends Controller
         }
 
         $request->validate([
-            // Laravel 10/11 có thể cần in:pending,approved,rejected
             'status' => 'required|in:pending,approved,rejected',
             'admin_comment' => 'nullable|string'
         ]);

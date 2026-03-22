@@ -157,13 +157,8 @@ class PayrollController extends Controller
 
     public function exportPDF($id)
     {
-        // Lấy dữ liệu phiếu lương kèm thông tin User và Bậc lương
         $payslip = Payslip::with(['user.salaryLevel'])->findOrFail($id);
-
-        // Truyền dữ liệu vào file giao diện PDF
         $pdf = Pdf::loadView('pdf.payslip_template', compact('payslip'));
-
-        // Tên file tải về (ví dụ: Phieu_Luong_Tram_Anh_T12.pdf)
         $fileName = 'Phieu_Luong_' . str_replace(' ', '_', $payslip->user->name) . '_T' . $payslip->month . '.pdf';
 
         return $pdf->download($fileName);

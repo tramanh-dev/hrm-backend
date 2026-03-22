@@ -18,7 +18,6 @@ class Department extends Model
     }
 
     // Quan hệ: Một phòng ban có nhiều nhân viên
-    // (Lưu ý: Bạn cần thêm cột department_id vào bảng users sau này nếu muốn link chặt hơn)
     // public function employees()
     // {
     //     return $this->hasMany(User::class, 'department_id');

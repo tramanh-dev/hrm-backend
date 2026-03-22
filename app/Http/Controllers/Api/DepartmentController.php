@@ -15,14 +15,12 @@ class DepartmentController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        // Map dữ liệu để Frontend dễ dùng
         $data = $departments->map(function ($dept) {
             return [
                 'id' => $dept->id,
                 'name' => $dept->name,
                 'description' => $dept->description,
                 'manager_name' => $dept->manager ? $dept->manager->name : 'Chưa bổ nhiệm',
-                // Nếu bạn chưa làm bảng user có department_id thì tạm thời để 0
                 'count' => 0 
             ];
         });
@@ -46,7 +44,7 @@ class DepartmentController extends Controller
         return response()->json(['message' => 'Tạo phòng ban thành công!', 'department' => $dept], 201);
     }
 
-    // 3. Cập nhật (Sửa) - MỚI THÊM
+    // 3. Cập nhật 
     public function update(Request $request, $id)
     {
         $dept = Department::find($id);

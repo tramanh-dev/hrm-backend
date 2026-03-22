@@ -11,29 +11,29 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
+    // public function register(Request $request)
+    // {
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            // 'role' => $request->role, 
-        ]);
-        $token = $user->createToken('auth_token')->plainTextToken;
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|email|unique:users,email',
+    //         'password' => 'required|string|min:6|confirmed',
+    //     ]);
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => bcrypt($request->password),
+    //         // 'role' => $request->role, 
+    //     ]);
+    //     $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Đăng ký thành công',
-            'access_token' => $token,
-            'user' => $user
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => 200,
+    //         'message' => 'Đăng ký thành công',
+    //         'access_token' => $token,
+    //         'user' => $user
+    //     ]);
+    // }
     public function login(Request $request)
     {
         $request->validate([

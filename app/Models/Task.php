@@ -23,7 +23,7 @@ class Task extends Model
         'attachment_path',
     ];
   protected $casts = [
-    'attachment_path' => 'array', // dạng mảng 
+    'attachment_path' => 'array', 
 ];
     // Quan hệ với người tạo task
     public function creator()
@@ -31,13 +31,13 @@ class Task extends Model
         return $this->belongsTo(User::class, 'created_by_user_id');
     }
 
-    // Quan hệ cũ (1 người) - Giữ lại để tương thích code cũ
+    // Quan hệ cũ (1 người) 
     public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to_user_id');
     }
 
-    // Quan hệ mới (Nhiều người) - CHỈ GIỮ 1 HÀM NÀY THÔI
+    // Quan hệ mới (Nhiều người) 
     public function assignees()
     {
         return $this->belongsToMany(User::class, 'task_assignees', 'task_id', 'user_id');

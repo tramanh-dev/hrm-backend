@@ -41,7 +41,6 @@ class MonthlyTimesheetExport implements FromCollection, WithHeadings, WithMappin
     {
         $dayCount = $row->day_count;
 
-        // Nếu chưa có công thì tính lại dựa trên giờ làm
         if (($dayCount === 0 || $dayCount === null) && $row->check_in && $row->check_out) {
             $checkIn  = Carbon::parse($row->check_in);
             $checkOut = Carbon::parse($row->check_out);
