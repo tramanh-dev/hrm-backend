@@ -5,7 +5,8 @@ return [
     'allowed_methods' => ['*'],
     'allowed_origins' => [
         'http://localhost:3000',
-        'https://hrm-frontend-gold.vercel.app'
+        'https://hrm-frontend-gold.vercel.app',
+        'https://trmnh.id.vn'
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
